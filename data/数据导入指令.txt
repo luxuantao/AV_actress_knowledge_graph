@@ -1,0 +1,14 @@
+#MATCH (n) detach delete n
+
+LOAD CSV WITH HEADERS FROM "file:///actressinfo.csv" AS line
+CREATE (:Actress{name:line.name, height:line.height, weight:line.weight, measurements:line.measurements, birthday:line.birthday, constellation:line.constellation, link:line.link, pic:line.pic})
+
+LOAD CSV WITH HEADERS FROM "file:///actressworks.csv" AS line
+CREATE (:Work{name:line.work})
+
+LOAD CSV WITH HEADERS FROM "file:///actressworks.csv" AS line
+MATCH (entity1: Actress{name:line.name}), (entity2: Work{name:line.work})
+CREATE (entity1) - [:Acted] -> (entity2)
+
+CREATE CONSTRAINT ON (a: Actress)
+ASSERT a.name is UNIQUE
